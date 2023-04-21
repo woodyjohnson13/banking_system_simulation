@@ -39,8 +39,6 @@ def main():
                 new_file.close()
                 notif.config(fg='green',text='Account has been created')
                 
-                
-        
     def register():
         #variables
         global temp_name
@@ -131,6 +129,35 @@ def main():
                 
         login_notif.config(fg='red',text='No account found')    
                
+    def deposit():
+        pass
+    
+    def withdraw():
+        pass
+    
+    def personal_details():
+        #variables
+        file=open(login_name,'r')
+        file_data=file.read()
+        user_details=file_data.split('\n')
+        user_name=user_details[0]
+        user_age=user_details[1]
+        user_gender=user_details[2]
+        user_balance=user_details[4]
+        #detail screen
+        personal_details_screen=Toplevel(master)
+        personal_details_screen.title('Personal details')
+        #labels
+        Label(personal_details_screen,text=f'Personal details',font=('Calibri',12)).grid(row=0,sticky=N,pady=10)
+        
+        Label(personal_details_screen,text=f'Name:{user_name}',font=('Calibri',12)).grid(row=1,sticky=W,pady=10)
+        
+        Label(personal_details_screen,text=f'Age:{user_age}',font=('Calibri',12)).grid(row=2,sticky=W,pady=10)
+        
+        Label(personal_details_screen,text=f'Gender:{user_gender}',font=('Calibri',12)).grid(row=3,sticky=W,pady=10)
+        
+        Label(personal_details_screen,text=f'Balance:{user_balance}',font=('Calibri',12)).grid(row=4,sticky=W,pady=10)        
+    
     def login():
         #variables
         global temp_login_password
