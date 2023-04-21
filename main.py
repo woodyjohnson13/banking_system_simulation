@@ -128,10 +128,62 @@ def main():
                     return
                 
         login_notif.config(fg='red',text='No account found')    
-               
-    def deposit():
-        pass
     
+    def finish_deposit():
+        if amount.get() == '':
+            deposit_notif.config(text='Amount is required')
+            return
+        if float(amount.get())<=0:
+            deposit_notif.config(text='Amount should be more that zero')
+            return
+
+        file=open(login_name,'r')
+        file_data=file.read()
+        details=file_data.split('\n')
+        curent_balance=details[4]
+        updated_balance=curent_balance
+        updated_balance=float(updated_balance)+float(amount.get())
+        file_data=file_data.replace(curent_balance,str(updated_balance))
+        file.seek(0)
+        file.truncate(0)
+        file.close()
+        
+        current_balance_label.config(text=f'Current Balance: {str(updated_balance)}',fg='green')
+        deposit_notif.config(text='Balance Updated',fg='green')
+             
+    
+    def deposit():
+        #variables
+        global amount
+        global deposit_notif
+        global current_balance_label
+        amount=StringVar()
+        file=open(login_name,'r')
+        file_data=file.read()
+        user_details=file_data.split('\n')
+        details_balance=user_details[4]
+        
+        #deposit screen
+        deposit_screen=Toplevel(master)
+        deposit_screen.title('Deposit')
+        #Label
+        
+        Label(deposit_screen,text="Deposit Menu",font=('Calibri',12)).grid(row=0,sticky=N,padx=10)
+
+        current_balance_label=Label(deposit_screen,text=f"Current Balance: {details_balance}",font=('Calibri',12)).grid(row=1,sticky=W,padx=10)
+        
+        Label(deposit_screen,text="Deposit Amount",font=('Calibri',12)).grid(row=2,sticky=W,padx=10)
+        
+        deposit_notif=Label(deposit_screen,font=('Calibri',12)).grid(row=4,sticky=N,pady=5) 
+        
+        #entries
+        Entry(deposit_screen,textvariable=amount).grid(row=2,column=1)
+        
+        #buttons
+        
+        Button(deposit_screen,text='Finish',font=('Calibri',12),command=finish_deposit).grid(row=3,sticky=W,pady=5) 
+        
+        
     def withdraw():
         pass
     
@@ -157,7 +209,8 @@ def main():
         Label(personal_details_screen,text=f'Gender:{user_gender}',font=('Calibri',12)).grid(row=3,sticky=W,pady=10)
         
         Label(personal_details_screen,text=f'Balance:{user_balance}',font=('Calibri',12)).grid(row=4,sticky=W,pady=10)        
-    
+
+        
     def login():
         #variables
         global temp_login_password
