@@ -131,13 +131,13 @@ def main():
     
     def finish_deposit():
         if amount.get() == '':
-            deposit_notif.config(text='Amount is required')
+            deposit_notif.config(text='Amount is required',fg='red')
             return
         if float(amount.get())<=0:
-            deposit_notif.config(text='Amount should be more that zero')
+            deposit_notif.config(text='Amount should be more that zero',fg='red')
             return
 
-        file=open(login_name,'r')
+        file=open(login_name,'r+')
         file_data=file.read()
         details=file_data.split('\n')
         curent_balance=details[4]
@@ -146,6 +146,7 @@ def main():
         file_data=file_data.replace(curent_balance,str(updated_balance))
         file.seek(0)
         file.truncate(0)
+        file.write(file_data)
         file.close()
         
         current_balance_label.config(text=f'Current Balance: {str(updated_balance)}',fg='green')
@@ -170,11 +171,13 @@ def main():
         
         Label(deposit_screen,text="Deposit Menu",font=('Calibri',12)).grid(row=0,sticky=N,padx=10)
 
-        current_balance_label=Label(deposit_screen,text=f"Current Balance: {details_balance}",font=('Calibri',12)).grid(row=1,sticky=W,padx=10)
+        current_balance_label=Label(deposit_screen,text=f"Current Balance: {details_balance}",font=('Calibri',12))
+        current_balance_label.grid(row=1,sticky=W,padx=10)
         
         Label(deposit_screen,text="Deposit Amount",font=('Calibri',12)).grid(row=2,sticky=W,padx=10)
         
-        deposit_notif=Label(deposit_screen,font=('Calibri',12)).grid(row=4,sticky=N,pady=5) 
+        deposit_notif=Label(deposit_screen,font=('Calibri',12))
+        deposit_notif.grid(row=4,sticky=N,pady=5) 
         
         #entries
         Entry(deposit_screen,textvariable=amount).grid(row=2,column=1)
