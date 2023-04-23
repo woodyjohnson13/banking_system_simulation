@@ -130,7 +130,30 @@ def main():
         login_notif.config(fg='red',text='No account found')    
     
     def finish_deposit():
-        if amount.get() == '':
+        if withdraw_amount.get() == '':
+            withdraw_notif.config(text='Amount is required',fg='red')
+            return
+        if float(withdraw_amount.get())<=0:
+            withdraw_notif.config(text='Amount should be more that zero',fg='red')
+            return
+
+        file=open(login_name,'r+')
+        file_data=file.read()
+        details=file_data.split('\n')
+        curent_balance=details[4]
+        updated_balance=curent_balance
+        updated_balance=float(updated_balance)-float(withdraw_amount.get())
+        file_data=file_data.replace(curent_balance,str(updated_balance))
+        file.seek(0)
+        file.truncate(0)
+        file.write(file_data)
+        file.close()
+        
+        current_balance_label.config(text=f'Current Balance: {str(updated_balance)}',fg='green')
+        withdraw_notif.config(text='Balance Updated',fg='green')
+             
+    def finish_withdraw():
+        if withdraw_amount.get() == '':
             deposit_notif.config(text='Amount is required',fg='red')
             return
         if float(amount.get())<=0:
@@ -142,7 +165,7 @@ def main():
         details=file_data.split('\n')
         curent_balance=details[4]
         updated_balance=curent_balance
-        updated_balance=float(updated_balance)+float(amount.get())
+        updated_balance=float(updated_balance)-float(withdraw_amount.get())
         file_data=file_data.replace(curent_balance,str(updated_balance))
         file.seek(0)
         file.truncate(0)
@@ -150,8 +173,7 @@ def main():
         file.close()
         
         current_balance_label.config(text=f'Current Balance: {str(updated_balance)}',fg='green')
-        deposit_notif.config(text='Balance Updated',fg='green')
-             
+        withdraw_notif.config(text='Balance Updated',fg='green')
     
     def deposit():
         #variables
@@ -188,7 +210,38 @@ def main():
         
         
     def withdraw():
-        pass
+        #variables
+        global withdraw_amount
+        global withdraw_notif
+        global current_balance_label
+        withdraw_amount=StringVar()
+        file=open(login_name,'r')
+        file_data=file.read()
+        user_details=file_data.split('\n')
+        details_balance=user_details[4]
+        
+        #deposit screen
+        withdraw_screen=Toplevel(master)
+        withdraw_screen.title('Withdraw')
+        #Label
+        
+        Label(withdraw_screen,text="Withdraw Menu",font=('Calibri',12)).grid(row=0,sticky=N,padx=10)
+
+        current_balance_label=Label(withdraw_screen,text=f"Current Balance: {details_balance}",font=('Calibri',12))
+        current_balance_label.grid(row=1,sticky=W,padx=10)
+        
+        Label(withdraw_screen,text="Withdraw Amount",font=('Calibri',12)).grid(row=2,sticky=W,padx=10)
+        
+        withdraw_notif=Label(withdraw_screen,font=('Calibri',12))
+        withdraw_notif.grid(row=4,sticky=N,pady=5) 
+        
+        #entries
+        Entry(withdraw_screen,textvariable=withdraw_amount).grid(row=2,column=1)
+        
+        #buttons
+        
+        Button(withdraw_screen,text='Finish',font=('Calibri',12),command=finish_deposit).grid(row=3,sticky=W,pady=5) 
+        
     
     def personal_details():
         #variables
